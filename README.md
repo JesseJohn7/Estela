@@ -30,14 +30,6 @@ npm run dev
 
 Open your browser and navigate to `http://localhost:3000` to view the application.
 
-### Environment Variables
-
-Make sure to set up the following environment variables for Supabase integration:
-
-```plaintext
-NEXT_PUBLIC_SUPABASE_URL=<YOUR_SUPABASE_URL>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<YOUR_SUPABASE_ANON_KEY>
-```
 
 ## Components
 
