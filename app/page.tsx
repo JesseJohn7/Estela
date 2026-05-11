@@ -38,7 +38,7 @@ export default function Home() {
               lineHeight: 1.2,
             }}
           >
-            Wishing Star Galaxy
+            Estela
           </h1>
           <p
             style={{
