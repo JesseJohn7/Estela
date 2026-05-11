@@ -12,7 +12,6 @@ export default function Home() {
 
   const handleLaunched = (wish: Wish) => {
     setNewWish(wish);
-    // Reset so next wish can trigger again
     setTimeout(() => setNewWish(null), 100);
   };
 
@@ -21,36 +20,51 @@ export default function Home() {
       <StarCanvas onStarClick={setSelectedWish} newWish={newWish} />
 
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-30 flex flex-col items-center pt-7 pointer-events-none">
-        <h1
-          className="text-2xl font-bold tracking-tight"
-          style={{
-            fontFamily: "'Lora', Georgia, serif",
-            color: "rgba(255,255,255,0.9)",
-            textShadow: "0 0 40px rgba(196,181,253,0.5), 0 2px 12px rgba(0,0,0,0.6)",
-            letterSpacing: "-0.01em",
-          }}
-        > 
-          Wishing Star Galaxy
-        </h1>
-        <p
-          className="mt-1 text-xs tracking-widest uppercase"
-          style={{
-            color: "rgba(196,181,253,0.45)",
-            fontFamily: "'DM Mono', monospace",
-          }}
-        >
-          Click a star · Shine a wish · Launch your own
-        </p>
+      <div
+        className="fixed top-0 left-0 right-0 z-30 flex flex-col items-center pointer-events-none px-4"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      >
+        <div className="flex flex-col items-center w-full pt-6">
+          <h1
+            style={{
+              fontFamily: "'Lora', Georgia, serif",
+              color: "rgba(255,255,255,0.92)",
+              textShadow: "0 0 40px rgba(196,181,253,0.5), 0 2px 12px rgba(0,0,0,0.6)",
+              letterSpacing: "-0.01em",
+              fontSize: "clamp(1.1rem, 5vw, 1.5rem)",
+              fontWeight: 700,
+              textAlign: "center",
+              width: "100%",
+              lineHeight: 1.2,
+            }}
+          >
+            Wishing Star Galaxy
+          </h1>
+          <p
+            style={{
+              marginTop: "0.35rem",
+              color: "rgba(196,181,253,0.45)",
+              fontFamily: "'DM Mono', monospace",
+              fontSize: "clamp(0.55rem, 2.2vw, 0.7rem)",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              textAlign: "center",
+              width: "100%",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Click a star&nbsp;·&nbsp;Shine a wish&nbsp;·&nbsp;Launch your own
+          </p>
+        </div>
       </div>
 
-      {/* Wish card modal */}
       {selectedWish && (
         <WishCard wish={selectedWish} onClose={() => setSelectedWish(null)} />
       )}
 
-      {/* Launch panel */}
       <LaunchWish onLaunched={handleLaunched} />
+
+     
     </main>
   );
 }

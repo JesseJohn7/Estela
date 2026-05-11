@@ -21,25 +21,20 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
       setError("Wishes must be 200 characters or less.");
       return;
     }
-
     setLaunching(true);
     setError("");
-
     const x = 0.1 + Math.random() * 0.8;
     const y = 0.1 + Math.random() * 0.8;
-
     const { data, error: dbErr } = await supabase
       .from("wishes")
       .insert({ text: trimmed, x, y, shine_count: 0 })
       .select()
       .single();
-
     if (dbErr) {
       setError("Failed to launch wish. Try again.");
       setLaunching(false);
       return;
     }
-
     onLaunched(data as Wish);
     setText("");
     setOpen(false);
@@ -48,7 +43,6 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
 
   return (
     <>
-      {/* Floating launch button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
@@ -68,7 +62,6 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
         </button>
       )}
 
-      {/* Expanded input panel */}
       {open && (
         <div
           className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pb-8 px-4"
@@ -84,12 +77,10 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
               animation: "slideUp 0.35s cubic-bezier(.34,1.56,.64,1) both",
             }}
           >
-            {/* Glow top edge */}
             <div
               className="absolute top-0 left-0 right-0 h-px"
               style={{
-                background:
-                  "linear-gradient(90deg, transparent, rgba(196,181,253,0.5), rgba(103,232,249,0.4), transparent)",
+                background: "linear-gradient(90deg, transparent, rgba(196,181,253,0.5), rgba(103,232,249,0.4), transparent)",
               }}
             />
 
@@ -173,9 +164,7 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
                     Launching…
                   </>
                 ) : (
-                  <>
-                    <span>✦</span> Launch
-                  </>
+                  <><span>✦</span> Launch</>
                 )}
               </button>
             </div>
