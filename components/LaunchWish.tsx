@@ -43,82 +43,55 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
 
   return (
     <>
+      {/* Trigger button */}
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2.5 px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95"
-          style={{
-            background: "linear-gradient(135deg, rgba(124,58,237,0.85), rgba(8,145,178,0.7))",
-            border: "1px solid rgba(196,181,253,0.35)",
-            color: "rgba(255,255,255,0.95)",
-            boxShadow: "0 0 28px rgba(124,58,237,0.4), 0 4px 24px rgba(0,0,0,0.5)",
-            fontFamily: "'DM Mono', monospace",
-            letterSpacing: "0.05em",
-            backdropFilter: "blur(10px)",
-          }}
+          className="launch-btn"
+          aria-label="Make a wish"
         >
-          <span style={{ filter: "drop-shadow(0 0 5px #c4b5fd)" }}>✦</span>
-          Make a Wish
+          <span className="launch-btn__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M8 1 L9.2 6.8 L15 8 L9.2 9.2 L8 15 L6.8 9.2 L1 8 L6.8 6.8 Z"
+                fill="currentColor"
+                opacity="0.9"
+              />
+            </svg>
+          </span>
+          <span className="launch-btn__label">Make a Wish</span>
         </button>
       )}
 
+      {/* Wish panel */}
       {open && (
-        <div
-          className="fixed bottom-0 left-0 right-0 z-40 flex justify-center pb-8 px-4"
-          style={{ pointerEvents: "none" }}
-        >
-          <div
-            className="w-full max-w-lg rounded-2xl p-5 relative overflow-hidden"
-            style={{
-              background: "linear-gradient(160deg, rgba(15,10,50,0.97), rgba(5,5,28,0.98))",
-              border: "1px solid rgba(196,181,253,0.2)",
-              boxShadow: "0 0 40px rgba(124,58,237,0.3), 0 16px 60px rgba(0,0,0,0.7)",
-              pointerEvents: "all",
-              animation: "slideUp 0.35s cubic-bezier(.34,1.56,.64,1) both",
-            }}
-          >
-            <div
-              className="absolute top-0 left-0 right-0 h-px"
-              style={{
-                background: "linear-gradient(90deg, transparent, rgba(196,181,253,0.5), rgba(103,232,249,0.4), transparent)",
-              }}
-            />
+        <div className="panel-backdrop" role="dialog" aria-modal="true" aria-label="Make a wish">
+          <div className="panel">
+            {/* Top shimmer line */}
+            <div className="panel__shimmer" aria-hidden="true" />
 
-            <div className="flex items-center gap-2 mb-3">
-              <span style={{ color: "rgba(196,181,253,0.8)", filter: "drop-shadow(0 0 4px #c4b5fd)" }}>✦</span>
-              <span
-                className="text-xs tracking-widest uppercase"
-                style={{ color: "rgba(196,181,253,0.5)", fontFamily: "'DM Mono', monospace" }}
-              >
-                Cast your wish into the stars
-              </span>
-              <div className="flex-1" />
+            {/* Header */}
+            <div className="panel__header">
+              <p className="panel__eyebrow">Cast your wish into the stars</p>
               <button
                 onClick={() => { setOpen(false); setError(""); setText(""); }}
-                className="text-sm transition-opacity hover:opacity-70"
-                style={{ color: "rgba(196,181,253,0.5)", fontFamily: "'DM Mono', monospace" }}
+                className="panel__close"
+                aria-label="Close"
               >
-                ✕
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
               </button>
             </div>
 
+            {/* Textarea */}
             <textarea
               value={text}
               onChange={(e) => { setText(e.target.value); setError(""); }}
               placeholder="I wish for…"
               maxLength={200}
               rows={3}
-              className="w-full resize-none rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-30 mb-3"
-              style={{
-                background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(196,181,253,0.15)",
-                color: "rgba(255,255,255,0.9)",
-                fontFamily: "'Lora', Georgia, serif",
-                fontStyle: text ? "italic" : "normal",
-                fontSize: "1rem",
-                lineHeight: "1.6",
-                caretColor: "#c4b5fd",
-              }}
+              className="panel__textarea"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -129,42 +102,32 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
             />
 
             {error && (
-              <p className="text-xs mb-2" style={{ color: "#f87171", fontFamily: "'DM Mono', monospace" }}>
-                {error}
-              </p>
+              <p className="panel__error" role="alert">{error}</p>
             )}
 
-            <div className="flex items-center justify-between">
-              <span
-                className="text-xs tabular-nums"
-                style={{
-                  color: text.length > 180 ? "#f87171" : "rgba(196,181,253,0.35)",
-                  fontFamily: "'DM Mono', monospace",
-                }}
-              >
-                {text.length}/200
+            {/* Footer */}
+            <div className="panel__footer">
+              <span className={`panel__count ${text.length > 180 ? "panel__count--warn" : ""}`}>
+                {text.length}<span>/200</span>
               </span>
 
               <button
                 onClick={handleLaunch}
                 disabled={launching || !text.trim()}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 disabled:opacity-40 hover:scale-105 active:scale-95"
-                style={{
-                  background: "linear-gradient(135deg, #7c3aed, #0891b2)",
-                  color: "#fff",
-                  fontFamily: "'DM Mono', monospace",
-                  letterSpacing: "0.05em",
-                  boxShadow: "0 0 20px rgba(124,58,237,0.4)",
-                  cursor: launching || !text.trim() ? "not-allowed" : "pointer",
-                }}
+                className="submit-btn"
               >
                 {launching ? (
                   <>
-                    <span className="inline-block" style={{ animation: "spin 0.8s linear infinite" }}>✦</span>
-                    Launching…
+                    <span className="submit-btn__spinner" aria-hidden="true" />
+                    Sending…
                   </>
                 ) : (
-                  <><span>✦</span> Launch</>
+                  <>
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+                      <path d="M1 12L12 1M12 1H4.5M12 1V8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Launch
+                  </>
                 )}
               </button>
             </div>
@@ -173,12 +136,243 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
       )}
 
       <style>{`
-        @keyframes slideUp {
-          from { transform: translateY(30px); opacity: 0; }
+        /* ── Trigger button ── */
+        .launch-btn {
+          position: fixed;
+          bottom: clamp(1.25rem, 4vw, 2rem);
+          left: 50%;
+          transform: translateX(-50%);
+          z-index: 40;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.7rem 1.5rem;
+          border-radius: 100px;
+          border: 1px solid rgba(196, 181, 253, 0.25);
+          background: rgba(12, 8, 42, 0.75);
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          color: rgba(220, 210, 255, 0.9);
+          font-family: 'DM Mono', ui-monospace, monospace;
+          font-size: clamp(0.75rem, 2.5vw, 0.8125rem);
+          font-weight: 500;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+          box-shadow: 0 0 0 1px rgba(124,58,237,0.1), 0 8px 32px rgba(0,0,0,0.5);
+          white-space: nowrap;
+        }
+        .launch-btn:hover {
+          transform: translateX(-50%) translateY(-2px);
+          border-color: rgba(196, 181, 253, 0.45);
+          box-shadow: 0 0 24px rgba(124,58,237,0.3), 0 12px 40px rgba(0,0,0,0.55);
+        }
+        .launch-btn:active {
+          transform: translateX(-50%) translateY(0px) scale(0.97);
+        }
+        .launch-btn__icon {
+          display: flex;
+          align-items: center;
+          color: rgba(196, 181, 253, 0.7);
+          flex-shrink: 0;
+        }
+        .launch-btn__label {
+          line-height: 1;
+        }
+
+        /* ── Panel backdrop ── */
+        .panel-backdrop {
+          position: fixed;
+          inset: 0;
+          z-index: 40;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          padding: clamp(0.75rem, 3vw, 1.5rem);
+          pointer-events: none;
+        }
+
+        /* ── Panel ── */
+        .panel {
+          position: relative;
+          width: 100%;
+          max-width: 520px;
+          border-radius: 20px;
+          padding: clamp(1rem, 4vw, 1.375rem);
+          background: linear-gradient(160deg, rgba(13, 9, 46, 0.98), rgba(5, 4, 24, 0.99));
+          border: 1px solid rgba(196, 181, 253, 0.15);
+          box-shadow:
+            0 0 0 1px rgba(103,232,249,0.05),
+            0 0 40px rgba(124,58,237,0.2),
+            0 24px 64px rgba(0,0,0,0.75);
+          pointer-events: all;
+          animation: panelUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+          overflow: hidden;
+        }
+
+        .panel__shimmer {
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.4) 35%, rgba(103,232,249,0.35) 65%, transparent 100%);
+        }
+
+        /* ── Panel header ── */
+        .panel__header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 0.875rem;
+        }
+        .panel__eyebrow {
+          font-family: 'DM Mono', ui-monospace, monospace;
+          font-size: clamp(0.65rem, 2vw, 0.7rem);
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: rgba(196, 181, 253, 0.4);
+          margin: 0;
+        }
+        .panel__close {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 28px;
+          height: 28px;
+          border-radius: 8px;
+          border: 1px solid rgba(196,181,253,0.1);
+          background: rgba(255,255,255,0.04);
+          color: rgba(196,181,253,0.45);
+          cursor: pointer;
+          transition: color 0.15s, border-color 0.15s, background 0.15s;
+          flex-shrink: 0;
+        }
+        .panel__close:hover {
+          color: rgba(196,181,253,0.8);
+          border-color: rgba(196,181,253,0.25);
+          background: rgba(255,255,255,0.07);
+        }
+
+        /* ── Textarea ── */
+        .panel__textarea {
+          width: 100%;
+          resize: none;
+          border-radius: 12px;
+          padding: 0.8rem 1rem;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(196,181,253,0.12);
+          color: rgba(255,255,255,0.88);
+          font-family: 'Lora', Georgia, serif;
+          font-style: italic;
+          font-size: clamp(0.9rem, 3vw, 1rem);
+          line-height: 1.65;
+          caret-color: #c4b5fd;
+          outline: none;
+          transition: border-color 0.2s;
+          box-sizing: border-box;
+          margin-bottom: 0.75rem;
+        }
+        .panel__textarea::placeholder {
+          color: rgba(196,181,253,0.25);
+          font-style: italic;
+        }
+        .panel__textarea:focus {
+          border-color: rgba(196,181,253,0.28);
+        }
+
+        /* ── Error ── */
+        .panel__error {
+          font-family: 'DM Mono', ui-monospace, monospace;
+          font-size: 0.7rem;
+          color: #f87171;
+          margin: -0.25rem 0 0.6rem;
+        }
+
+        /* ── Footer ── */
+        .panel__footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.75rem;
+        }
+        .panel__count {
+          font-family: 'DM Mono', ui-monospace, monospace;
+          font-size: 0.7rem;
+          color: rgba(196,181,253,0.3);
+          font-variant-numeric: tabular-nums;
+          transition: color 0.2s;
+          flex-shrink: 0;
+        }
+        .panel__count span {
+          opacity: 0.5;
+        }
+        .panel__count--warn {
+          color: #f87171;
+        }
+
+        /* ── Submit button ── */
+        .submit-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.45rem;
+          padding: 0.6rem 1.2rem;
+          border-radius: 10px;
+          border: none;
+          background: linear-gradient(135deg, #6d28d9, #0e7490);
+          color: rgba(255,255,255,0.95);
+          font-family: 'DM Mono', ui-monospace, monospace;
+          font-size: clamp(0.72rem, 2vw, 0.78rem);
+          font-weight: 500;
+          letter-spacing: 0.07em;
+          text-transform: uppercase;
+          cursor: pointer;
+          transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+          box-shadow: 0 0 16px rgba(109,40,217,0.4);
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+        .submit-btn:hover:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 0 24px rgba(109,40,217,0.55);
+        }
+        .submit-btn:active:not(:disabled) {
+          transform: scale(0.97);
+        }
+        .submit-btn:disabled {
+          opacity: 0.35;
+          cursor: not-allowed;
+        }
+
+        /* Spinner */
+        .submit-btn__spinner {
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          border: 1.5px solid rgba(255,255,255,0.3);
+          border-top-color: rgba(255,255,255,0.9);
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+          flex-shrink: 0;
+        }
+
+        /* ── Animations ── */
+        @keyframes panelUp {
+          from { transform: translateY(20px); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
         }
         @keyframes spin {
           to { transform: rotate(360deg); }
+        }
+
+        /* ── Mobile tweaks ── */
+        @media (max-width: 480px) {
+          .panel {
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+          }
+          .panel-backdrop {
+            padding-bottom: env(safe-area-inset-bottom, 0.75rem);
+          }
         }
       `}</style>
     </>
