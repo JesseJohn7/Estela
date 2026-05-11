@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wishing Star Galaxy",
+  title: "",
   description: "Cast your wishes into the stars. A shared starfield of human hopes.",
 };
 
