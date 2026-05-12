@@ -140,7 +140,7 @@ export default function WishCard({ wish, onClose }: WishCardProps) {
       // rollback everything if DB write failed
       setShineCount(prevShineCount);
       setGivenToWish(prevGivenToWish);
-      setGivenToday(prevGivenToDay);
+      setGivenToday(prevGivenToday);
       setLoading(false);
       return;
     }
