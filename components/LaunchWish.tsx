@@ -135,7 +135,7 @@ export default function LaunchWish({ onLaunched }: LaunchWishProps) {
         </div>
       )}
 
-      <style>{`
+      <style suppressHydrationWarning>{`
         /* ── Trigger button ── */
         .launch-btn {
           position: fixed;
