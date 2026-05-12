@@ -18,7 +18,7 @@ To get started with Estela, clone the repository and install the dependencies.
 git clone https://github.com/JesseJohn7/Estela.git
 cd Estela
 npm install
-```
+``
 
 ## Usage
 
