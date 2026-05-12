@@ -123,8 +123,6 @@ export default function WishCard({ wish, onClose }: WishCardProps) {
     setTimeout(() => setParticles([]), 900);
 
     // ── write to wish_shines (upsert = insert or update) ─────
-    // If user already has a row for this wish, increment count.
-    // If not, create a fresh row with count = 1.
     const { error: shineErr } = await supabase
       .from("wish_shines")
       .upsert(
@@ -132,12 +130,13 @@ export default function WishCard({ wish, onClose }: WishCardProps) {
           wish_id:          wish.id,
           user_fingerprint: fp.current,
           count:            prevGivenToWish + 1,
+          created_at:       new Date().toISOString(),
         },
         { onConflict: "wish_id,user_fingerprint" }
       );
 
     if (shineErr) {
-      // rollback everything if DB write failed
+      console.error("Shine upsert error:", shineErr);
       setShineCount(prevShineCount);
       setGivenToWish(prevGivenToWish);
       setGivenToday(prevGivenToday);
@@ -146,12 +145,19 @@ export default function WishCard({ wish, onClose }: WishCardProps) {
     }
 
     // ── increment wishes.shine_count via the SQL function ─────
-    const { data: newCount, error: rpcErr } = await supabase
+    // RPC can return a number directly OR an array — handle both
+    const { data: rpcData, error: rpcErr } = await supabase
       .rpc("increment_shine_count", { wish_id: wish.id });
 
-    // if RPC returned the new count, sync it (handles concurrent shines)
-    if (!rpcErr && newCount !== null) {
-      setShineCount(newCount as number);
+    if (rpcErr) {
+      console.error("RPC error:", rpcErr);
+      // DB didn't update — roll back the optimistic count
+      setShineCount(prevShineCount);
+    } else {
+      const returned = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+      if (returned !== null && returned !== undefined) {
+        setShineCount(Number(returned));
+      }
     }
 
     setLoading(false);
