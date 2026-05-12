@@ -326,7 +326,7 @@ export default function WishCard({ wish, onClose }: WishCardProps) {
         </div>
       </div>
 
-      <style>{`
+      <style suppressHydrationWarning>{`
         .wc-eyebrow {
           font-family: 'DM Mono', ui-monospace, monospace;
           font-size: 0.7rem;
